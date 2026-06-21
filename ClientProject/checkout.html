@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Checkout | Dead Dingo Dongas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+  <!-- Stripe.js — loaded before body scripts so Stripe is available -->
+  <script src="https://js.stripe.com/v3/" async></script>
+</head>
+<body class="checkout-page">
+
+  <!-- Minimal nav -->
+  <header class="checkout-header">
+    <div class="container checkout-header__inner">
+      <a href="index.html" class="checkout-header__logo">
+        <img src="assets/businessLogo/IMG_8025.jpeg" alt="Dead Dingo Dongas" class="checkout-header__logo-img" />
+      </a>
+      <div class="checkout-header__steps">
+        <span class="checkout-step checkout-step--done">Configure</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h8M9 5l3 3-3 3"/></svg>
+        <span class="checkout-step checkout-step--active">Review &amp; Pay</span>
+      </div>
+      <a href="index.html#product" class="checkout-header__back">← Back</a>
+    </div>
+  </header>
+
+  <main class="checkout-main">
+    <div class="container">
+      <div class="checkout-grid">
+
+        <!-- ===== ORDER SUMMARY ===== -->
+        <aside class="checkout-summary">
+          <h2 class="checkout-summary__heading">Order Summary</h2>
+          <div id="order-summary"><!-- rendered by checkout.js --></div>
+        </aside>
+
+        <!-- ===== CHECKOUT FORM ===== -->
+        <div class="checkout-form-wrap">
+          <form id="checkout-form" novalidate>
+            <!-- Hidden field carries serialised order data -->
+            <input type="hidden" id="order-details" name="order_details" />
+
+            <!-- ===== CONTACT ===== -->
+            <fieldset class="co-fieldset">
+              <legend class="co-fieldset__legend">Your Details</legend>
+
+              <div class="co-field">
+                <label class="co-label" for="fullName">Full Name <span aria-hidden="true">*</span></label>
+                <input class="co-input" type="text" id="fullName" name="fullName"
+                       autocomplete="name" required placeholder="Jane Smith" />
+                <span class="co-field-error" id="err-fullName" aria-live="polite"></span>
+              </div>
+
+              <div class="co-row">
+                <div class="co-field">
+                  <label class="co-label" for="email">Email <span aria-hidden="true">*</span></label>
+                  <input class="co-input" type="email" id="email" name="email"
+                         autocomplete="email" required placeholder="jane@example.com" />
+                  <span class="co-field-error" id="err-email" aria-live="polite"></span>
+                </div>
+                <div class="co-field">
+                  <label class="co-label" for="phone">Phone <span aria-hidden="true">*</span></label>
+                  <input class="co-input" type="tel" id="phone" name="phone"
+                         autocomplete="tel" required placeholder="04XX XXX XXX" />
+                  <span class="co-field-error" id="err-phone" aria-live="polite"></span>
+                </div>
+              </div>
+            </fieldset>
+
+            <!-- ===== DELIVERY ===== -->
+            <fieldset class="co-fieldset">
+              <legend class="co-fieldset__legend">Delivery Address</legend>
+              <p class="co-fieldset__note">Used to quote your freight costs — you won't be charged for freight until it's confirmed.</p>
+
+              <div class="co-field">
+                <label class="co-label" for="address">Street Address <span aria-hidden="true">*</span></label>
+                <input class="co-input" type="text" id="address" name="address"
+                       autocomplete="street-address" required placeholder="123 Outback Rd" />
+                <span class="co-field-error" id="err-address" aria-live="polite"></span>
+              </div>
+
+              <div class="co-row co-row--3">
+                <div class="co-field co-field--grow">
+                  <label class="co-label" for="suburb">Suburb <span aria-hidden="true">*</span></label>
+                  <input class="co-input" type="text" id="suburb" name="suburb"
+                         autocomplete="address-level2" required placeholder="Dubbo" />
+                  <span class="co-field-error" id="err-suburb" aria-live="polite"></span>
+                </div>
+                <div class="co-field co-field--narrow">
+                  <label class="co-label" for="state">State <span aria-hidden="true">*</span></label>
+                  <select class="co-input co-select" id="state" name="state"
+                          autocomplete="address-level1" required>
+                    <option value="">State</option>
+                    <option>NSW</option><option>VIC</option><option>QLD</option>
+                    <option>WA</option><option>SA</option><option>TAS</option>
+                    <option>ACT</option><option>NT</option>
+                  </select>
+                  <span class="co-field-error" id="err-state" aria-live="polite"></span>
+                </div>
+                <div class="co-field co-field--narrow">
+                  <label class="co-label" for="postcode">Postcode <span aria-hidden="true">*</span></label>
+                  <input class="co-input" type="text" id="postcode" name="postcode"
+                         autocomplete="postal-code" required
+                         pattern="[0-9]{4}" maxlength="4" inputmode="numeric" placeholder="2000" />
+                  <span class="co-field-error" id="err-postcode" aria-live="polite"></span>
+                </div>
+              </div>
+
+              <div class="co-field">
+                <label class="co-label" for="notes">Delivery Notes (optional)</label>
+                <textarea class="co-input co-textarea" id="notes" name="notes" rows="3"
+                          placeholder="Site access details, gate codes, best time for delivery..."></textarea>
+              </div>
+            </fieldset>
+
+            <!-- ===== PAYMENT ===== -->
+            <fieldset class="co-fieldset">
+              <legend class="co-fieldset__legend">Payment</legend>
+
+              <div class="co-payment-options" id="payment-options">
+
+                <label class="co-payment-option">
+                  <input type="radio" name="payment" value="card" required checked />
+                  <div class="co-payment-option__card">
+                    <div class="co-payment-option__left">
+                      <span class="co-payment-option__badge co-payment-option__badge--card">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:15px;height:15px">
+                          <rect x="1" y="4" width="22" height="16" rx="2"/>
+                          <line x1="1" y1="10" x2="23" y2="10"/>
+                        </svg>
+                        Credit / Debit Card
+                      </span>
+                    </div>
+                    <span class="co-payment-option__desc">Visa · Mastercard · Amex — secure &amp; encrypted</span>
+                  </div>
+                </label>
+
+                <label class="co-payment-option">
+                  <input type="radio" name="payment" value="afterpay" />
+                  <div class="co-payment-option__card">
+                    <div class="co-payment-option__left">
+                      <span class="co-payment-option__badge co-payment-option__badge--afterpay">Afterpay</span>
+                    </div>
+                    <span class="co-payment-option__desc">4 fortnightly payments, interest-free</span>
+                  </div>
+                </label>
+
+                <label class="co-payment-option">
+                  <input type="radio" name="payment" value="paypal" />
+                  <div class="co-payment-option__card">
+                    <div class="co-payment-option__left">
+                      <span class="co-payment-option__badge co-payment-option__badge--paypal">PayPal</span>
+                    </div>
+                    <span class="co-payment-option__desc">Pay via PayPal balance or card through PayPal</span>
+                  </div>
+                </label>
+
+                <label class="co-payment-option">
+                  <input type="radio" name="payment" value="bpay" />
+                  <div class="co-payment-option__card">
+                    <div class="co-payment-option__left">
+                      <span class="co-payment-option__badge co-payment-option__badge--bpay">BPAY</span>
+                    </div>
+                    <span class="co-payment-option__desc">Internet banking transfer</span>
+                  </div>
+                </label>
+
+              </div>
+
+              <!-- Stripe card element — visible when card is selected -->
+              <div class="co-stripe-section" id="stripe-card-section">
+                <div class="co-stripe-wrap">
+                  <div id="stripe-card-element" class="co-stripe-element">
+                    <!-- Stripe mounts here -->
+                  </div>
+                </div>
+                <div id="stripe-card-errors" class="co-stripe-errors" role="alert" aria-live="polite"></div>
+                <div class="co-stripe-secure">
+                  <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="width:13px;height:13px;flex-shrink:0">
+                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
+                  </svg>
+                  Card details are encrypted and processed securely by Stripe. We never store your card number.
+                </div>
+              </div>
+
+              <!-- Info text for non-card methods -->
+              <p class="co-payment-info" id="payment-info" aria-live="polite"></p>
+
+            </fieldset>
+
+            <!-- ===== SUBMIT ===== -->
+            <p class="co-form-error" id="form-error" aria-live="assertive"></p>
+
+            <button type="submit" class="btn btn--amber btn--lg btn--block co-submit-btn" id="co-submit-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;flex-shrink:0">
+                <path d="M5 12h14M12 5l7 7-7 7"/>
+              </svg>
+              <span id="submit-label">Place Order &amp; Pay</span>
+            </button>
+
+            <p class="co-disclaimer">
+              By placing your order you agree to our
+              <a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a>.
+              Card payments are processed securely via Stripe.
+              For Afterpay, PayPal, and BPAY — payment is arranged after we confirm your freight costs.
+            </p>
+          </form>
+
+          <!-- ===== SUCCESS ===== -->
+          <div class="checkout-success" id="checkout-success" hidden>
+            <div class="checkout-success__icon" aria-hidden="true">
+              <svg viewBox="0 0 52 52" fill="none">
+                <circle cx="26" cy="26" r="25" stroke="currentColor" stroke-width="2"/>
+                <path d="M14 26l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <h2 class="checkout-success__heading">Order Placed!</h2>
+            <p class="checkout-success__body">
+              Your order has been received. We'll send a confirmation to your email address and follow up within 1 business day.
+            </p>
+            <p class="checkout-success__payment" id="checkout-payment-detail"></p>
+            <div class="checkout-success__actions">
+              <a href="index.html" class="btn btn--ghost">← Back to Home</a>
+              <a href="mailto:dddongas@gmail.com" class="btn btn--amber">Email Us</a>
+            </div>
+          </div>
+
+        </div><!-- /.checkout-form-wrap -->
+
+      </div><!-- /.checkout-grid -->
+    </div>
+  </main>
+
+  <footer class="checkout-footer">
+    <div class="container">
+      <p>Dead Dingo Dongas &middot; <a href="mailto:dddongas@gmail.com">dddongas@gmail.com</a> &middot; 1300 XXX XXX &middot; ABN: XX XXX XXX XXX</p>
+    </div>
+  </footer>
+
+  <script src="js/shop.js"></script>
+  <script src="js/checkout.js"></script>
+</body>
+</html>
