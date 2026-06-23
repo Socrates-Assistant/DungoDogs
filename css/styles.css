@@ -2357,3 +2357,89 @@ h1, h2, h3, h4 {
   color: var(--text-mid);
   margin-bottom: 1.5rem;
 }
+
+/* ============================================================
+   FEATURE LIST (expandable)
+   ============================================================ */
+.feature-list {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.feature-item {
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 1.125rem 0;
+}
+
+.feature-list > .feature-item:first-child {
+  border-top: 1px solid var(--cream-dark);
+}
+
+/* Expandable (details) items */
+details.feature-item {
+  cursor: pointer;
+}
+
+details.feature-item summary {
+  list-style: none;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+details.feature-item summary::-webkit-details-marker {
+  display: none;
+}
+
+.feature-item__text {
+  flex: 1;
+  font-size: 0.9875rem;
+  line-height: 1.6;
+  color: var(--text-dark);
+}
+
+.feature-item__text strong {
+  color: var(--green-dark);
+}
+
+.feature-item__chevron {
+  flex-shrink: 0;
+  width: 20px;
+  height: 20px;
+  color: var(--green-mid);
+  margin-top: 0.2rem;
+  transition: transform var(--transition);
+}
+
+details[open] .feature-item__chevron {
+  transform: rotate(180deg);
+}
+
+.feature-item__bullets {
+  margin-top: 0.625rem;
+  padding-left: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+}
+
+.feature-item__bullets li {
+  font-size: 0.9rem;
+  color: var(--text-mid);
+  line-height: 1.6;
+}
+
+/* Static (non-expandable) items */
+.feature-item--static .feature-item__text {
+  display: block;
+}
+
+/* About page origins line */
+.about__origins {
+  font-style: italic;
+  color: var(--text-mid);
+  margin-bottom: 0.75rem;
+}
