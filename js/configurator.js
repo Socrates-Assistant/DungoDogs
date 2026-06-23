@@ -99,7 +99,7 @@
     btn.disabled = empty;
     btn.classList.toggle('btn--disabled', empty);
     const label = btn.querySelector('.add-to-cart-label');
-    if (label) label.textContent = empty ? 'Select a quantity above' : 'Add to Cart';
+    if (label) label.textContent = empty ? 'Select a quantity above' : 'Register Enquiry';
   }
 
   function initDisplays() {
@@ -158,11 +158,11 @@
 
   document.addEventListener('click', () => SHED_CONFIG.addons.forEach(a => hideTip(a.id)));
 
-  /* ---- Add to Cart ---- */
+  /* ---- Register Enquiry ---- */
   document.getElementById('add-to-cart')?.addEventListener('click', () => {
     Cart.save(cart);
     Cart.updateBadge(cart);
-    openCart();
+    openEnquiry();
   });
 
   /* ---- Cart Sidebar ---- */
@@ -249,6 +249,94 @@
       ? fmtPrice(SHED_CONFIG.basePrice)
       : '$X,XXX';
   }
+
+  /* ---- Enquiry Modal ---- */
+  function buildOrderSummary(c) {
+    const lines = [`${c.shedQty}× The Ultimate Aussie Garden Shed @ ${fmtPrice(SHED_CONFIG.basePrice)} each`];
+    SHED_CONFIG.addons.forEach(a => {
+      const qty = c.addons[a.id] || 0;
+      if (qty > 0) lines.push(`${qty}× ${a.name} @ ${fmtPrice(a.price)} each`);
+    });
+    const total = Cart.totalPrice(c);
+    return `<strong>Your order:</strong><br>${lines.join('<br>')}` +
+      (total !== null ? `<br><strong>Est. total: ${fmtPrice(total)}</strong> <em style="font-size:0.78em">(excl. freight)</em>` : '');
+  }
+
+  function openEnquiry() {
+    const overlay = document.getElementById('enquiry-overlay');
+    if (!overlay) return;
+    const summary = document.getElementById('enquiry-order-summary');
+    if (summary) summary.innerHTML = buildOrderSummary(Cart.get());
+    document.getElementById('enquiry-form-wrap').style.display = '';
+    document.getElementById('enquiry-success').style.display = 'none';
+    document.getElementById('enquiry-form')?.reset();
+    overlay.classList.add('open');
+    overlay.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+    document.getElementById('enq-email')?.focus();
+  }
+
+  function closeEnquiry() {
+    const overlay = document.getElementById('enquiry-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    overlay.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+
+  document.getElementById('enquiry-close')?.addEventListener('click', closeEnquiry);
+  document.getElementById('enquiry-done')?.addEventListener('click', closeEnquiry);
+  document.getElementById('enquiry-overlay')?.addEventListener('click', e => {
+    if (e.target.id === 'enquiry-overlay') closeEnquiry();
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape' && document.getElementById('enquiry-overlay')?.classList.contains('open')) closeEnquiry();
+  });
+
+  document.getElementById('enquiry-form')?.addEventListener('submit', e => {
+    e.preventDefault();
+    const form     = e.target;
+    const email    = form.email.value.trim();
+    const suburb   = form.suburb.value.trim();
+    const postcode = form.postcode.value.trim();
+
+    let valid = true;
+    [form.email, form.suburb, form.postcode].forEach(input => {
+      const ok = input.checkValidity() && input.value.trim();
+      input.classList.toggle('error', !ok);
+      if (!ok) valid = false;
+    });
+    if (!valid) return;
+
+    const c     = Cart.get();
+    const lines = [`${c.shedQty}x The Ultimate Aussie Garden Shed @ ${fmtPrice(SHED_CONFIG.basePrice)} each`];
+    SHED_CONFIG.addons.forEach(a => {
+      const qty = c.addons[a.id] || 0;
+      if (qty > 0) lines.push(`${qty}x ${a.name} @ ${fmtPrice(a.price)} each`);
+    });
+    const total = Cart.totalPrice(c);
+
+    const body = [
+      'Hi,',
+      '',
+      'I would like to register an enquiry for freight assessment.',
+      '',
+      'ORDER:',
+      ...lines,
+      total !== null ? `Estimated Total (excl. freight): ${fmtPrice(total)}` : '',
+      '',
+      'MY DETAILS:',
+      `Email: ${email}`,
+      `Suburb: ${suburb}`,
+      `Postcode: ${postcode}`,
+    ].filter(l => l !== undefined).join('\n');
+
+    const mailto = `mailto:dddongas@gmail.com?subject=${encodeURIComponent('Shed Enquiry — Dead Dingo Dongas')}&body=${encodeURIComponent(body)}`;
+    window.location.href = mailto;
+
+    document.getElementById('enquiry-form-wrap').style.display = 'none';
+    document.getElementById('enquiry-success').style.display = '';
+  });
 
   /* ---- Init ---- */
   initDisplays();

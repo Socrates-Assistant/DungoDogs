@@ -7,27 +7,27 @@
    ===================================================== */
 const SHED_CONFIG = {
   name:      'The Ultimate Aussie Garden Shed',
-  basePrice: null, /* TODO: set confirmed price, e.g. 4999 */
+  basePrice: 4699,
   addons: [
     {
       id:          'window',
-      name:        'Extra Window',
-      description: 'Additional louvred aluminium window — same size and finish as the standard window.',
-      price:       null, /* TODO: set price, e.g. 299 */
+      name:        'Window',
+      description: 'Additional louvred aluminium window — same size and finish as the standard included window.',
+      price:       132,
       imageSrc:    'assets/addons/window.jpg',
     },
     {
       id:          'pa-door',
-      name:        'Single PA Door',
+      name:        'Single Door',
       description: 'Single pedestrian access door, 820 mm × 2040 mm, matching panel finish.',
-      price:       null, /* TODO: set price, e.g. 499 */
+      price:       198,
       imageSrc:    'assets/addons/pa-door.jpg',
     },
     {
       id:          'double-door',
       name:        'Double Door',
       description: 'Wide double-leaf swing door — ideal for ride-ons, quad bikes, large equipment, or easy storage access.',
-      price:       null, /* TODO: set price, e.g. 799 */
+      price:       396,
       imageSrc:    'assets/addons/double-door.jpg',
     },
   ],
