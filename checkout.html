@@ -9,8 +9,6 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="css/checkout.css" />
-  <!-- Stripe.js — loaded before body scripts so Stripe is available -->
-  <script src="https://js.stripe.com/v3/" async></script>
 </head>
 <body class="checkout-page">
 
@@ -125,28 +123,12 @@
               <div class="co-payment-options" id="payment-options">
 
                 <label class="co-payment-option">
-                  <input type="radio" name="payment" value="card" required checked />
-                  <div class="co-payment-option__card">
-                    <div class="co-payment-option__left">
-                      <span class="co-payment-option__badge co-payment-option__badge--card">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true" style="width:15px;height:15px">
-                          <rect x="1" y="4" width="22" height="16" rx="2"/>
-                          <line x1="1" y1="10" x2="23" y2="10"/>
-                        </svg>
-                        Credit / Debit Card
-                      </span>
-                    </div>
-                    <span class="co-payment-option__desc">Visa · Mastercard · Amex — secure &amp; encrypted</span>
-                  </div>
-                </label>
-
-                <label class="co-payment-option">
-                  <input type="radio" name="payment" value="afterpay" />
+                  <input type="radio" name="payment" value="afterpay" required checked />
                   <div class="co-payment-option__card">
                     <div class="co-payment-option__left">
                       <span class="co-payment-option__badge co-payment-option__badge--afterpay">Afterpay</span>
                     </div>
-                    <span class="co-payment-option__desc">4 fortnightly payments, interest-free</span>
+                    <span class="co-payment-option__desc">4 fortnightly payments, interest-free — we'll send your payment link within 1 business day</span>
                   </div>
                 </label>
 
@@ -156,7 +138,7 @@
                     <div class="co-payment-option__left">
                       <span class="co-payment-option__badge co-payment-option__badge--paypal">PayPal</span>
                     </div>
-                    <span class="co-payment-option__desc">Pay via PayPal balance or card through PayPal</span>
+                    <span class="co-payment-option__desc">Pay via PayPal — we'll send a payment request to your email address</span>
                   </div>
                 </label>
 
@@ -166,30 +148,11 @@
                     <div class="co-payment-option__left">
                       <span class="co-payment-option__badge co-payment-option__badge--bpay">BPAY</span>
                     </div>
-                    <span class="co-payment-option__desc">Internet banking transfer</span>
+                    <span class="co-payment-option__desc">Internet banking — your Biller Code &amp; Reference will be emailed to you</span>
                   </div>
                 </label>
 
               </div>
-
-              <!-- Stripe card element — visible when card is selected -->
-              <div class="co-stripe-section" id="stripe-card-section">
-                <div class="co-stripe-wrap">
-                  <div id="stripe-card-element" class="co-stripe-element">
-                    <!-- Stripe mounts here -->
-                  </div>
-                </div>
-                <div id="stripe-card-errors" class="co-stripe-errors" role="alert" aria-live="polite"></div>
-                <div class="co-stripe-secure">
-                  <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true" style="width:13px;height:13px;flex-shrink:0">
-                    <path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/>
-                  </svg>
-                  Card details are encrypted and processed securely by Stripe. We never store your card number.
-                </div>
-              </div>
-
-              <!-- Info text for non-card methods -->
-              <p class="co-payment-info" id="payment-info" aria-live="polite"></p>
 
             </fieldset>
 
@@ -209,14 +172,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;flex-shrink:0">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-              <span id="submit-label">Place Order &amp; Pay</span>
+              <span id="submit-label">Submit Order</span>
             </button>
 
             <p class="co-disclaimer">
-              By placing your order you agree to our
-              <a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a>.
-              Card payments are processed securely via Stripe.
-              For Afterpay, PayPal, and BPAY — payment is arranged after we confirm your freight costs.
+              By placing your order you agree to our <a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a>.
+              Payment is arranged after we confirm your freight costs — we will contact you within 1 business day.
             </p>
           </form>
 
