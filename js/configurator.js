@@ -296,16 +296,27 @@
   document.getElementById('enquiry-form')?.addEventListener('submit', e => {
     e.preventDefault();
     const form     = e.target;
+    const name     = form.name.value.trim();
     const email    = form.email.value.trim();
     const suburb   = form.suburb.value.trim();
     const postcode = form.postcode.value.trim();
 
     let valid = true;
-    [form.email, form.suburb, form.postcode].forEach(input => {
+    [form.name, form.email, form.suburb, form.postcode].forEach(input => {
       const ok = input.checkValidity() && input.value.trim();
       input.classList.toggle('error', !ok);
       if (!ok) valid = false;
     });
+
+    const disclaimerChecked = form.disclaimer.checked;
+    const disclaimerError = document.getElementById('enq-disclaimer-error');
+    if (!disclaimerChecked) {
+      disclaimerError.style.display = '';
+      valid = false;
+    } else {
+      disclaimerError.style.display = 'none';
+    }
+
     if (!valid) return;
 
     const c     = Cart.get();
@@ -326,9 +337,12 @@
       total !== null ? `Estimated Total (excl. freight): ${fmtPrice(total)}` : '',
       '',
       'MY DETAILS:',
+      `Name: ${name}`,
       `Email: ${email}`,
       `Suburb: ${suburb}`,
       `Postcode: ${postcode}`,
+      '',
+      'The customer has read and agreed to the Product Specifications & Liability Disclaimer.',
     ].filter(l => l !== undefined).join('\n');
 
     const mailto = `mailto:dddongas@gmail.com?subject=${encodeURIComponent('Shed Enquiry — Dead Dingo Dongas')}&body=${encodeURIComponent(body)}`;

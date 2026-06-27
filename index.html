@@ -24,7 +24,7 @@
         <li><a href="#product" class="nav__link">The Donga</a></li>
         <li><a href="#features" class="nav__link">Features</a></li>
         <li><a href="#about" class="nav__link">About Us</a></li>
-        <li><a href="#shipping" class="nav__link">Shipping</a></li>
+        <li><a href="#shipping" class="nav__link">Shipping &amp; Returns</a></li>
         <li><a href="#contact" class="nav__link">Contact</a></li>
       </ul>
 
@@ -472,7 +472,7 @@
 
         </div>
         <p class="shipping__note animate-on-scroll">
-          For full details read our <a href="assets/shipping.md" target="_blank" rel="noopener">Shipping &amp; Delivery Policy</a>.
+          For full details read our <a href="shipping-returns.html" target="_blank" rel="noopener">Shipping and Returns Policy</a>.
         </p>
       </div>
     </section>
@@ -711,6 +711,10 @@
 
         <form class="enquiry-form" id="enquiry-form" novalidate>
           <div class="enquiry-form__field">
+            <label for="enq-name">Full Name <span aria-hidden="true">*</span></label>
+            <input type="text" id="enq-name" name="name" required autocomplete="name" placeholder="Your full name" />
+          </div>
+          <div class="enquiry-form__field">
             <label for="enq-email">Email Address <span aria-hidden="true">*</span></label>
             <input type="email" id="enq-email" name="email" required autocomplete="email" placeholder="your@email.com" />
           </div>
@@ -721,6 +725,13 @@
           <div class="enquiry-form__field">
             <label for="enq-postcode">Postcode <span aria-hidden="true">*</span></label>
             <input type="text" id="enq-postcode" name="postcode" required inputmode="numeric" pattern="[0-9]{4}" maxlength="4" placeholder="e.g. 2750" />
+          </div>
+          <div class="enquiry-form__field enquiry-form__field--checkbox" id="enq-disclaimer-wrap">
+            <label class="enquiry-checkbox-label">
+              <input type="checkbox" id="enq-disclaimer" name="disclaimer" />
+              <span class="enquiry-checkbox-text">I have read, understood, and agree to the <a href="legal-disclaimer.html" target="_blank" rel="noopener">Product Specifications &amp; Liability Disclaimer</a>. I acknowledge that this heavy-duty 1,100kg kit is supplied strictly as a bare-shell garden shed on a supply-only basis. I accept sole responsibility for verifying local NSW council regulations, managing appropriate site/ground preparation, and securing necessary engineering or wind-rated ground anchoring (such as AncorLoc systems) for my specific location. <span aria-hidden="true">*</span></span>
+            </label>
+            <p class="enquiry-checkbox-error" id="enq-disclaimer-error" style="display:none">You must agree to the disclaimer before proceeding.</p>
           </div>
           <button type="submit" class="btn btn--amber btn--lg btn--block enquiry-form__submit">Send Enquiry</button>
           <p class="enquiry-form__note">* Required. Your details are used for freight assessment only.</p>
@@ -776,8 +787,9 @@
           <h4 class="footer__heading">Policies</h4>
           <ul role="list">
             <li><a href="assets/warrenty.md" target="_blank" rel="noopener">Warranty Policy</a></li>
-            <li><a href="assets/shipping.md" target="_blank" rel="noopener">Shipping Policy</a></li>
+            <li><a href="shipping-returns.html" target="_blank" rel="noopener">Shipping and Returns Policy</a></li>
             <li><a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a></li>
+            <li><a href="legal-disclaimer.html" target="_blank" rel="noopener">Legal Disclaimer</a></li>
           </ul>
         </nav>
 
