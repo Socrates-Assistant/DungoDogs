@@ -973,6 +973,9 @@ h1, h2, h3, h4 {
   letter-spacing: 0.06em;
 }
 
+.about__fact--logo { justify-content: center; align-items: center; padding: 1rem; }
+.about__fact-logo { width: 100%; max-width: 140px; height: auto; object-fit: contain; border-radius: var(--radius); }
+
 /* ============================================================
    TESTIMONIALS
    ============================================================ */
