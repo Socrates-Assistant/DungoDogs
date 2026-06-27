@@ -273,7 +273,7 @@
     overlay.classList.add('open');
     overlay.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
-    document.getElementById('enq-email')?.focus();
+    document.getElementById('enq-name')?.focus();
   }
 
   function closeEnquiry() {

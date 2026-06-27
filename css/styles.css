@@ -334,15 +334,6 @@ h1, h2, h3, h4 {
   padding-block: 5rem 3rem;
 }
 
-.hero__eyebrow {
-  font-size: 0.78rem;
-  font-weight: 600;
-  letter-spacing: 0.15em;
-  text-transform: uppercase;
-  color: var(--amber);
-  margin-bottom: 1rem;
-}
-
 .hero__heading {
   font-family: 'Playfair Display', serif;
   font-size: clamp(2.25rem, 6vw, 4.25rem);
@@ -578,49 +569,6 @@ h1, h2, h3, h4 {
 /* ============================================================
    FEATURES
    ============================================================ */
-.features__grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-}
-
-.feature-card {
-  background: var(--white);
-  border-radius: var(--radius-lg);
-  padding: 2rem;
-  box-shadow: var(--shadow-sm);
-  transition: box-shadow var(--transition), transform var(--transition);
-}
-
-.feature-card:hover {
-  box-shadow: var(--shadow-md);
-  transform: translateY(-2px);
-}
-
-.feature-card__icon {
-  width: 52px;
-  height: 52px;
-  color: var(--green-mid);
-  margin-bottom: 1.25rem;
-}
-
-.feature-card__icon svg {
-  width: 100%;
-  height: 100%;
-}
-
-.feature-card h3 {
-  font-size: 1.1875rem;
-  color: var(--green-dark);
-  margin-bottom: 0.625rem;
-}
-
-.feature-card p {
-  font-size: 0.9375rem;
-  color: var(--text-mid);
-  line-height: 1.7;
-}
-
 /* ============================================================
    HOW IT WORKS (PROCESS)
    ============================================================ */
@@ -895,7 +843,7 @@ h1, h2, h3, h4 {
   display: grid;
   grid-template-columns: 1fr 340px;
   gap: 4rem;
-  align-items: center;
+  align-items: start;
 }
 
 .about__text .section__title {

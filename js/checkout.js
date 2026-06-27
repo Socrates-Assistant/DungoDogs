@@ -44,7 +44,7 @@ const STRIPE_PUBLISHABLE_KEY = 'pk_live_REPLACE_WITH_YOUR_STRIPE_KEY';
       </div>
       ${addonItems.length > 0 ? `
         <div class="co-summary__addons">
-          <p class="co-summary__addons-heading">Add-ons</p>
+          <p class="co-summary__addons-heading">Optional Extras</p>
           ${addonItems.map(a => `
             <div class="co-summary__addon">
               <span>${a.name} × ${cart.addons[a.id]}</span>
@@ -81,7 +81,7 @@ const STRIPE_PUBLISHABLE_KEY = 'pk_live_REPLACE_WITH_YOUR_STRIPE_KEY';
       if (cardSection) {
         cardSection.innerHTML = `
           <p class="co-stripe-unavailable">
-            Card payment could not load. Please refresh the page, or call us on 1300 XXX XXX.
+            Card payment could not load. Please refresh the page, or email us at dddongas@gmail.com.
           </p>`;
       }
       return;
@@ -224,10 +224,20 @@ const STRIPE_PUBLISHABLE_KEY = 'pk_live_REPLACE_WITH_YOUR_STRIPE_KEY';
       return;
     }
 
+    /* 1b — Disclaimer checkbox */
+    const disclaimerBox   = document.getElementById('co-disclaimer');
+    const disclaimerError = document.getElementById('co-disclaimer-error');
+    if (!disclaimerBox?.checked) {
+      if (disclaimerError) disclaimerError.style.display = '';
+      disclaimerBox?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      return;
+    }
+    if (disclaimerError) disclaimerError.style.display = 'none';
+
     /* 2 — Card-specific validation */
     if (paymentMethod === 'card') {
       if (!stripe || !cardElement) {
-        setError('Card payment is unavailable. Please refresh and try again, or call 1300 XXX XXX.');
+        setError('Card payment is unavailable. Please refresh and try again, or email dddongas@gmail.com.');
         return;
       }
       if (!cardValid) {
@@ -379,7 +389,7 @@ const STRIPE_PUBLISHABLE_KEY = 'pk_live_REPLACE_WITH_YOUR_STRIPE_KEY';
       }
     } catch {
       setLoading(false);
-      setError('Could not connect. Please email dddongas@gmail.com or call 1300 XXX XXX.');
+      setError('Could not connect. Please email dddongas@gmail.com directly.');
     }
   }
 
