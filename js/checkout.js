@@ -107,7 +107,7 @@
   form.addEventListener('submit', e => {
     e.preventDefault();
 
-    const paymentMethod = document.querySelector('input[name="payment"]:checked')?.value;
+    const paymentMethod = 'paypal';
 
     /* 1 — Validate contact + address fields */
     if (!validateAllFields()) {
@@ -153,9 +153,7 @@
     const total = Cart.totalPrice(cart);
 
     const PAYMENT_LABELS = {
-      afterpay: 'Afterpay (4 fortnightly payments)',
-      paypal:   'PayPal',
-      bpay:     'BPAY (internet banking)',
+      paypal: 'PayPal',
     };
 
     const bodyLines = [
@@ -201,9 +199,7 @@
     successEl.hidden = false;
 
     const pmMessages = {
-      afterpay: "We'll send your Afterpay payment link to your email within 1 business day.",
-      paypal:   "We'll send a PayPal payment request to your email address within 1 business day.",
-      bpay:     "Your BPAY Biller Code and Reference Number will be emailed to you within 1 business day.",
+      paypal: "We'll send a PayPal payment request to your email address within 1 business day.",
     };
 
     const pmEl = document.getElementById('checkout-payment-detail');

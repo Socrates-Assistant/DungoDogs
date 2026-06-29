@@ -589,6 +589,10 @@
   .checkout-success__actions .btn { width: 100%; justify-content: center; }
 }
 
+/* ---- PayPal payment panel ---- */
+.co-payment-paypal { display: flex; align-items: center; gap: 1rem; padding: 1rem; background: var(--cream-dark); border-radius: var(--radius); }
+.co-payment-paypal__desc { font-size: 0.875rem; color: var(--text-mid); margin: 0; }
+
 /* ---- Disclaimer checkbox ---- */
 .co-disclaimer-field { margin-bottom: 1.25rem; }
 .co-disclaimer-label { display: flex; align-items: flex-start; gap: 0.75rem; cursor: pointer; }
