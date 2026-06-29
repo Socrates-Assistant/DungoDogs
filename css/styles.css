@@ -2412,9 +2412,18 @@ details[open] .feature-item__chevron {
 
 /* About page origins line */
 .about__origins {
+  font-family: 'Playfair Display', serif;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--green-dark);
+  margin-bottom: 0.25rem;
+}
+
+.about__subtitle {
+  font-size: 0.9rem;
   font-style: italic;
-  color: var(--text-mid);
-  margin-bottom: 0.75rem;
+  color: var(--amber);
+  margin-bottom: 1rem;
 }
 
 /* ---- Enquiry form checkbox ---- */
