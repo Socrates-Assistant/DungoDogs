@@ -696,8 +696,23 @@
             <input type="email" id="enq-email" name="email" required autocomplete="email" placeholder="your@email.com" />
           </div>
           <div class="enquiry-form__field">
-            <label for="enq-suburb">Suburb <span aria-hidden="true">*</span></label>
-            <input type="text" id="enq-suburb" name="suburb" required autocomplete="address-level2" placeholder="e.g. Penrith" />
+            <label for="enq-address">Street Address <span aria-hidden="true">*</span></label>
+            <input type="text" id="enq-address" name="address" required autocomplete="street-address" placeholder="e.g. 12 Station St" />
+          </div>
+          <div class="enquiry-form__row">
+            <div class="enquiry-form__field">
+              <label for="enq-suburb">Suburb <span aria-hidden="true">*</span></label>
+              <input type="text" id="enq-suburb" name="suburb" required autocomplete="address-level2" placeholder="e.g. Penrith" />
+            </div>
+            <div class="enquiry-form__field enquiry-form__field--narrow">
+              <label for="enq-state">State <span aria-hidden="true">*</span></label>
+              <select id="enq-state" name="state" required autocomplete="address-level1">
+                <option value="">State</option>
+                <option>NSW</option><option>VIC</option><option>QLD</option>
+                <option>WA</option><option>SA</option><option>TAS</option>
+                <option>ACT</option><option>NT</option>
+              </select>
+            </div>
           </div>
           <div class="enquiry-form__field">
             <label for="enq-postcode">Postcode <span aria-hidden="true">*</span></label>

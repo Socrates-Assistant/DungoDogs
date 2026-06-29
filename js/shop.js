@@ -30,6 +30,13 @@ const SHED_CONFIG = {
       price:       396,
       imageSrc:    'assets/addons/double-door.jpg',
     },
+    {
+      id:          'anchor-kit',
+      name:        'AnchorLoc Kit',
+      description: 'Engineering-rated ground anchoring system for securing your shed to the site. Recommended for council-exempt installations and most site conditions.',
+      price:       null,
+      imageSrc:    'assets/addons/anchor-kit.jpg',
+    },
   ],
 };
 

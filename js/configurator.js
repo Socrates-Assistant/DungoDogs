@@ -298,11 +298,13 @@
     const form     = e.target;
     const name     = form.name.value.trim();
     const email    = form.email.value.trim();
+    const address  = form.address.value.trim();
     const suburb   = form.suburb.value.trim();
+    const state    = form.state.value.trim();
     const postcode = form.postcode.value.trim();
 
     let valid = true;
-    [form.name, form.email, form.suburb, form.postcode].forEach(input => {
+    [form.name, form.email, form.address, form.suburb, form.state, form.postcode].forEach(input => {
       const ok = input.checkValidity() && input.value.trim();
       input.classList.toggle('error', !ok);
       if (!ok) valid = false;
@@ -337,10 +339,9 @@
       total !== null ? `Estimated Total (excl. freight): ${fmtPrice(total)}` : '',
       '',
       'MY DETAILS:',
-      `Name: ${name}`,
-      `Email: ${email}`,
-      `Suburb: ${suburb}`,
-      `Postcode: ${postcode}`,
+      `Name:     ${name}`,
+      `Email:    ${email}`,
+      `Address:  ${address}, ${suburb} ${state} ${postcode}`,
       '',
       'The customer has read and agreed to the Product Specifications & Liability Disclaimer.',
     ].filter(l => l !== undefined).join('\n');

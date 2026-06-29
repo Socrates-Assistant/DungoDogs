@@ -2275,6 +2275,28 @@ h1, h2, h3, h4 {
   border-color: #e53e3e;
 }
 
+.enquiry-form__row { display: flex; gap: 0.75rem; margin-bottom: 1rem; }
+.enquiry-form__row .enquiry-form__field { flex: 1; margin-bottom: 0; }
+.enquiry-form__row .enquiry-form__field--narrow { flex: 0 0 90px; }
+
+.enquiry-form__field select {
+  width: 100%;
+  border: 1.5px solid var(--cream-dark);
+  border-radius: var(--radius);
+  padding: 0.625rem 0.875rem;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: var(--text-dark);
+  background: var(--white);
+  transition: border-color var(--transition), box-shadow var(--transition);
+}
+.enquiry-form__field select:focus {
+  outline: none;
+  border-color: var(--green-mid);
+  box-shadow: 0 0 0 3px rgba(45,90,39,0.15);
+}
+.enquiry-form__field select.error { border-color: #e53e3e; }
+
 .enquiry-form__submit {
   margin-top: 0.5rem;
 }
