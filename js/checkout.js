@@ -48,11 +48,15 @@
         <span>Subtotal (excl. freight)</span>
         <strong>${price !== null ? fmtPrice(price) : 'TBC'}</strong>
       </div>
+      <div class="co-summary__deposit">
+        <span>Deposit due now</span>
+        <strong>$1,500 × ${cart.shedQty} kit${cart.shedQty > 1 ? 's' : ''} = ${fmtPrice(1500 * cart.shedQty)}</strong>
+      </div>
       <div class="co-summary__freight-note">
         <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
           <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"/>
         </svg>
-        Freight confirmed separately — you won't be charged until you approve the freight quote.
+        Deposit: $1,500 per kit. Balance invoice issued after deposit is confirmed.
       </div>
       <a href="index.html#product" class="co-summary__edit-link">← Edit order</a>
     `;
@@ -62,13 +66,14 @@
      FORM VALIDATION
      ============================================================ */
   const VALIDATORS = {
-    fullName: v => v.trim().length >= 2 || 'Please enter your full name.',
-    email:    v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || 'Please enter a valid email address.',
-    phone:    v => /^(\+?61|0)[2-9]\d{8}$|^04\d{8}$/.test(v.replace(/\s/g, '')) || 'Please enter a valid Australian phone number.',
-    address:  v => v.trim().length >= 4 || 'Please enter your street address.',
-    suburb:   v => v.trim().length >= 2 || 'Please enter your suburb.',
-    state:    v => v !== '' || 'Please select your state.',
-    postcode: v => /^\d{4}$/.test(v.trim()) || 'Please enter a valid 4-digit postcode.',
+    fullName:      v => v.trim().length >= 2 || 'Please enter your full name.',
+    invoiceNumber: v => v.trim().length >= 2 || 'Please enter your invoice number.',
+    email:         v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v.trim()) || 'Please enter a valid email address.',
+    phone:         v => /^(\+?61|0)[2-9]\d{8}$|^04\d{8}$/.test(v.replace(/\s/g, '')) || 'Please enter a valid Australian phone number.',
+    address:       v => v.trim().length >= 4 || 'Please enter your street address.',
+    suburb:        v => v.trim().length >= 2 || 'Please enter your suburb.',
+    state:         v => v !== '' || 'Please select your state.',
+    postcode:      v => /^\d{4}$/.test(v.trim()) || 'Please enter a valid 4-digit postcode.',
   };
 
   function validateField(name) {
@@ -137,14 +142,15 @@
   function submitOrder(paymentMethod) {
     setLoading(true);
 
-    const name     = document.getElementById('fullName')?.value.trim() || '';
-    const email    = document.getElementById('email')?.value.trim()    || '';
-    const phone    = document.getElementById('phone')?.value.trim()    || '';
-    const address  = document.getElementById('address')?.value.trim()  || '';
-    const suburb   = document.getElementById('suburb')?.value.trim()   || '';
-    const state    = document.getElementById('state')?.value.trim()    || '';
-    const postcode = document.getElementById('postcode')?.value.trim() || '';
-    const notes    = document.getElementById('notes')?.value.trim()    || '';
+    const name          = document.getElementById('fullName')?.value.trim()      || '';
+    const invoiceNumber = document.getElementById('invoiceNumber')?.value.trim() || '';
+    const email         = document.getElementById('email')?.value.trim()         || '';
+    const phone         = document.getElementById('phone')?.value.trim()         || '';
+    const address       = document.getElementById('address')?.value.trim()       || '';
+    const suburb        = document.getElementById('suburb')?.value.trim()        || '';
+    const state         = document.getElementById('state')?.value.trim()         || '';
+    const postcode      = document.getElementById('postcode')?.value.trim()      || '';
+    const notes         = document.getElementById('notes')?.value.trim()         || '';
 
     const addonLines = SHED_CONFIG.addons
       .filter(a => (cart.addons[a.id] || 0) > 0)
@@ -157,14 +163,15 @@
     };
 
     const bodyLines = [
-      'New order from Dead Dingo Dongas website.',
+      'Deposit request from Dead Dingo Dongas website.',
       '',
       'CUSTOMER DETAILS:',
-      `  Name:     ${name}`,
-      `  Email:    ${email}`,
-      `  Phone:    ${phone}`,
-      `  Address:  ${address}, ${suburb} ${state} ${postcode}`,
-      notes ? `  Notes:    ${notes}` : null,
+      `  Name:       ${name}`,
+      `  Invoice No: ${invoiceNumber}`,
+      `  Email:      ${email}`,
+      `  Phone:      ${phone}`,
+      `  Address:    ${address}, ${suburb} ${state} ${postcode}`,
+      notes ? `  Notes:      ${notes}` : null,
       '',
       'ORDER:',
       `  ${cart.shedQty}x The Ultimate Aussie Garden Shed @ ${fmtPrice(SHED_CONFIG.basePrice)} each`,
@@ -176,7 +183,7 @@
       'Customer has read and agreed to the Product Specifications & Liability Disclaimer.',
     ].filter(l => l !== null);
 
-    const subject = `Shed Order — ${name} — Dead Dingo Dongas`;
+    const subject = `Deposit Request — ${name} — Invoice ${invoiceNumber} — Dead Dingo Dongas`;
     const mailto  = `mailto:dddongas@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
 
     window.location.href = mailto;
@@ -190,7 +197,7 @@
      ============================================================ */
   function setLoading(on) {
     if (submitBtn) submitBtn.disabled = on;
-    if (submitLbl) submitLbl.textContent = on ? 'Submitting…' : 'Submit Order';
+    if (submitLbl) submitLbl.textContent = on ? 'Submitting…' : 'Submit Deposit';
   }
 
   function showSuccess(paymentMethod) {
@@ -199,7 +206,7 @@
     successEl.hidden = false;
 
     const pmMessages = {
-      paypal: "We'll send a PayPal payment request to your email address within 1 business day.",
+      paypal: "We'll send a PayPal deposit request ($1,500 per kit) to your email within 1 business day.",
     };
 
     const pmEl = document.getElementById('checkout-payment-detail');

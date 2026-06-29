@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Checkout | Dead Dingo Dongas</title>
+  <title>Deposit Payment | Dead Dingo Dongas</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
@@ -19,9 +19,11 @@
         <img src="assets/businessLogo/IMG_8025.jpeg" alt="Dead Dingo Dongas" class="checkout-header__logo-img" />
       </a>
       <div class="checkout-header__steps">
-        <span class="checkout-step checkout-step--done">Configure</span>
+        <span class="checkout-step checkout-step--done">Enquiry</span>
         <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h8M9 5l3 3-3 3"/></svg>
-        <span class="checkout-step checkout-step--active">Review &amp; Pay</span>
+        <span class="checkout-step checkout-step--active">Deposit</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h8M9 5l3 3-3 3"/></svg>
+        <span class="checkout-step">Balance</span>
       </div>
       <a href="index.html#product" class="checkout-header__back">← Back</a>
     </div>
@@ -33,7 +35,7 @@
 
         <!-- ===== ORDER SUMMARY ===== -->
         <aside class="checkout-summary">
-          <h2 class="checkout-summary__heading">Order Summary</h2>
+          <h2 class="checkout-summary__heading">Deposit Summary</h2>
           <div id="order-summary"><!-- rendered by checkout.js --></div>
         </aside>
 
@@ -52,6 +54,14 @@
                 <input class="co-input" type="text" id="fullName" name="fullName"
                        autocomplete="name" required placeholder="Jane Smith" />
                 <span class="co-field-error" id="err-fullName" aria-live="polite"></span>
+              </div>
+
+              <div class="co-field">
+                <label class="co-label" for="invoiceNumber">Invoice Number <span aria-hidden="true">*</span></label>
+                <input class="co-input" type="text" id="invoiceNumber" name="invoiceNumber"
+                       required placeholder="e.g. DDD-2024-001" />
+                <p class="co-field-hint">From the deposit invoice email we sent after your enquiry.</p>
+                <span class="co-field-error" id="err-invoiceNumber" aria-live="polite"></span>
               </div>
 
               <div class="co-row">
@@ -122,7 +132,7 @@
 
               <div class="co-payment-paypal">
                 <span class="co-payment-option__badge co-payment-option__badge--paypal">PayPal</span>
-                <p class="co-payment-paypal__desc">We'll send a PayPal payment request to your email address within 1 business day of order confirmation.</p>
+                <p class="co-payment-paypal__desc">We'll send a PayPal payment request for your deposit ($1,500 per kit) to your email address within 1 business day.</p>
               </div>
 
             </fieldset>
@@ -143,12 +153,12 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;flex-shrink:0">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-              <span id="submit-label">Submit Order</span>
+              <span id="submit-label">Submit Deposit</span>
             </button>
 
             <p class="co-disclaimer">
-              By placing your order you agree to our <a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a>.
-              Payment is arranged after we confirm your freight costs — we will contact you within 1 business day.
+              By submitting you agree to our <a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a>.
+              We'll send a PayPal deposit request ($1,500 per kit) within 1 business day. Your balance invoice will follow closer to your dispatch date.
             </p>
           </form>
 
@@ -160,9 +170,9 @@
                 <path d="M14 26l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
-            <h2 class="checkout-success__heading">Order Placed!</h2>
+            <h2 class="checkout-success__heading">Deposit Request Submitted!</h2>
             <p class="checkout-success__body">
-              Your order has been received. We'll send a confirmation to your email address and follow up within 1 business day.
+              Your deposit request has been received. We'll send a PayPal payment request for $1,500 per kit to your email within 1 business day, along with your confirmed production slot details.
             </p>
             <p class="checkout-success__payment" id="checkout-payment-detail"></p>
             <div class="checkout-success__actions">

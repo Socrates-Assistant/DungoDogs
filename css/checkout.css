@@ -600,4 +600,11 @@
 .co-disclaimer-text { font-size: 0.8rem; line-height: 1.55; color: var(--text-mid); }
 .co-disclaimer-text a { color: var(--green-mid); text-decoration: underline; }
 .co-disclaimer-text a:hover { color: var(--green-dark); }
+
+/* ---- Deposit callout in order summary ---- */
+.co-summary__deposit { display: flex; justify-content: space-between; align-items: baseline; gap: 0.5rem; padding: 0.6rem 0.75rem; background: var(--amber); border-radius: var(--radius); margin-top: 0.5rem; font-size: 0.9rem; }
+.co-summary__deposit span, .co-summary__deposit strong { color: var(--green-dark); }
+
+/* ---- Field hint text (e.g. invoice number) ---- */
+.co-field-hint { font-size: 0.8rem; color: var(--text-mid); margin: 0.25rem 0 0; }
 .co-disclaimer-error { font-size: 0.78rem; color: #c0392b; margin-top: 0.35rem; margin-left: 1.875rem; }
