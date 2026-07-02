@@ -7,7 +7,7 @@
    ===================================================== */
 /* Paste the live Client ID from developer.paypal.com → Apps & Credentials.
    Payments will not work until this is set. */
-const PAYPAL_CLIENT_ID = 'YOUR_LIVE_CLIENT_ID_HERE';
+const PAYPAL_CLIENT_ID = 'AT6L-wto5s-oPXFaOyjRuB7a-2AR-u8qa3azuIEFr-N3ayrsXVmN-EAOVbJ8BlLi28StkfsTuTv6xBLk';
 
 const DEPOSIT_PER_KIT = 1500;
 
