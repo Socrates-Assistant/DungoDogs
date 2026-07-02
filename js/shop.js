@@ -5,6 +5,16 @@
    Update prices when the client confirms them.
    Leave as null to show "TBC" to customers.
    ===================================================== */
+/* Paste the live Client ID from developer.paypal.com → Apps & Credentials.
+   Payments will not work until this is set. */
+const PAYPAL_CLIENT_ID = 'YOUR_LIVE_CLIENT_ID_HERE';
+
+const DEPOSIT_PER_KIT = 1500;
+
+/* Orders/enquiries are emailed via FormSubmit. First submission triggers a
+   one-time activation email to this inbox — it must be clicked once. */
+const ORDER_EMAIL_ENDPOINT = 'https://formsubmit.co/ajax/dddongas@gmail.com';
+
 const SHED_CONFIG = {
   name:      'The Ultimate Aussie Garden Shed',
   basePrice: 4699,
@@ -81,8 +91,10 @@ const Cart = (() => {
     if (SHED_CONFIG.basePrice === null) return null;
     let t = SHED_CONFIG.basePrice * (c.shedQty || 1);
     for (const a of SHED_CONFIG.addons) {
-      if (a.price === null) return null;
-      t += a.price * (c.addons[a.id] || 0);
+      const qty = c.addons[a.id] || 0;
+      if (qty === 0) continue;
+      if (a.price === null) return null; /* TBC addon in cart → whole total is TBC */
+      t += a.price * qty;
     }
     return t;
   };

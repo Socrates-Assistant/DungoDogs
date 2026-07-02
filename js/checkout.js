@@ -2,9 +2,14 @@
 
 /* =====================================================
    CHECKOUT  —  checkout.html only
-   Depends on: shop.js (SHED_CONFIG, Cart, fmtPrice)
-   Payment methods: Afterpay, PayPal, BPAY
-   Orders are submitted via mailto to dddongas@gmail.com
+   Depends on: shop.js (SHED_CONFIG, Cart, fmtPrice,
+   PAYPAL_CLIENT_ID, DEPOSIT_PER_KIT, ORDER_EMAIL_ENDPOINT)
+
+   Flow:
+   1. Customer confirms details → order emailed via FormSubmit
+      (mailto fallback if the request fails)
+   2. PayPal buttons appear → deposit captured client-side
+   3. Payment confirmation emailed, success screen shown
    ===================================================== */
 
 (function () {
@@ -17,6 +22,28 @@
   }
 
   Cart.updateBadge(cart);
+
+  const depositTotal = DEPOSIT_PER_KIT * cart.shedQty;
+  const paypalConfigured = PAYPAL_CLIENT_ID && PAYPAL_CLIENT_ID !== 'YOUR_LIVE_CLIENT_ID_HERE';
+
+  /* ============================================================
+     PAYPAL SDK — loaded once, early, so buttons render instantly
+     ============================================================ */
+  let sdkPromise = null;
+  function loadPayPalSdk() {
+    if (!paypalConfigured) return Promise.reject(new Error('PayPal client ID not configured'));
+    if (!sdkPromise) {
+      sdkPromise = new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = `https://www.paypal.com/sdk/js?client-id=${encodeURIComponent(PAYPAL_CLIENT_ID)}&currency=AUD&components=buttons`;
+        s.onload  = () => resolve(window.paypal);
+        s.onerror = () => reject(new Error('PayPal SDK failed to load'));
+        document.head.appendChild(s);
+      });
+    }
+    return sdkPromise;
+  }
+  loadPayPalSdk().catch(() => { /* handled again at render time */ });
 
   /* ============================================================
      ORDER SUMMARY
@@ -50,7 +77,7 @@
       </div>
       <div class="co-summary__deposit">
         <span>Deposit due now</span>
-        <strong>$1,500 × ${cart.shedQty} kit${cart.shedQty > 1 ? 's' : ''} = ${fmtPrice(1500 * cart.shedQty)}</strong>
+        <strong>$1,500 × ${cart.shedQty} kit${cart.shedQty > 1 ? 's' : ''} = ${fmtPrice(depositTotal)}</strong>
       </div>
       <div class="co-summary__freight-note">
         <svg viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -99,20 +126,53 @@
   });
 
   /* ============================================================
-     FORM SUBMIT
+     FORM SUBMIT — Phase A: confirm details
      ============================================================ */
-  const form      = document.getElementById('checkout-form');
-  const submitBtn = document.getElementById('co-submit-btn');
-  const submitLbl = document.getElementById('submit-label');
-  const successEl = document.getElementById('checkout-success');
-  const formErrEl = document.getElementById('form-error');
+  const form          = document.getElementById('checkout-form');
+  const submitBtn     = document.getElementById('co-submit-btn');
+  const submitLbl     = document.getElementById('submit-label');
+  const successEl     = document.getElementById('checkout-success');
+  const formErrEl     = document.getElementById('form-error');
+  const paypalSection = document.getElementById('co-paypal-section');
+  const paypalNote    = paypalSection?.querySelector('.co-paypal-note');
 
   if (!form) return;
 
+  function fieldValue(id) {
+    return document.getElementById(id)?.value.trim() || '';
+  }
+
+  function buildOrderBody() {
+    const addonLines = SHED_CONFIG.addons
+      .filter(a => (cart.addons[a.id] || 0) > 0)
+      .map(a => `  ${cart.addons[a.id]}x ${a.name} @ ${fmtPrice(a.price)} each`);
+
+    const total = Cart.totalPrice(cart);
+    const notes = fieldValue('notes');
+
+    return [
+      'Deposit order from Dead Dingo Dongas website.',
+      '',
+      'CUSTOMER DETAILS:',
+      `  Name:       ${fieldValue('fullName')}`,
+      `  Invoice No: ${fieldValue('invoiceNumber')}`,
+      `  Email:      ${fieldValue('email')}`,
+      `  Phone:      ${fieldValue('phone')}`,
+      `  Address:    ${fieldValue('address')}, ${fieldValue('suburb')} ${fieldValue('state')} ${fieldValue('postcode')}`,
+      notes ? `  Notes:      ${notes}` : null,
+      '',
+      'ORDER:',
+      `  ${cart.shedQty}x The Ultimate Aussie Garden Shed @ ${fmtPrice(SHED_CONFIG.basePrice)} each`,
+      ...addonLines,
+      total !== null ? `  Subtotal (excl. freight): ${fmtPrice(total)}` : '',
+      `  Deposit due: ${fmtPrice(depositTotal)} ($1,500 x ${cart.shedQty} kit)`,
+      '',
+      'Customer has read and agreed to the Product Specifications & Liability Disclaimer.',
+    ].filter(l => l !== null).join('\n');
+  }
+
   form.addEventListener('submit', e => {
     e.preventDefault();
-
-    const paymentMethod = 'paypal';
 
     /* 1 — Validate contact + address fields */
     if (!validateAllFields()) {
@@ -132,64 +192,106 @@
     }
     if (disclaimerError) disclaimerError.style.display = 'none';
 
-    /* 3 — Build mailto and submit */
-    submitOrder(paymentMethod);
+    /* 3 — Email the order details, then reveal payment */
+    submitOrderDetails();
   });
 
-  /* ============================================================
-     SUBMIT ORDER via mailto
-     ============================================================ */
-  function submitOrder(paymentMethod) {
+  function submitOrderDetails() {
     setLoading(true);
+    if (formErrEl) formErrEl.textContent = '';
 
-    const name          = document.getElementById('fullName')?.value.trim()      || '';
-    const invoiceNumber = document.getElementById('invoiceNumber')?.value.trim() || '';
-    const email         = document.getElementById('email')?.value.trim()         || '';
-    const phone         = document.getElementById('phone')?.value.trim()         || '';
-    const address       = document.getElementById('address')?.value.trim()       || '';
-    const suburb        = document.getElementById('suburb')?.value.trim()        || '';
-    const state         = document.getElementById('state')?.value.trim()         || '';
-    const postcode      = document.getElementById('postcode')?.value.trim()      || '';
-    const notes         = document.getElementById('notes')?.value.trim()         || '';
+    const body = buildOrderBody();
+    const name = fieldValue('fullName');
+    const invoiceNumber = fieldValue('invoiceNumber');
 
-    const addonLines = SHED_CONFIG.addons
-      .filter(a => (cart.addons[a.id] || 0) > 0)
-      .map(a => `  ${cart.addons[a.id]}x ${a.name} @ ${fmtPrice(a.price)} each`);
+    fetch(ORDER_EMAIL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: `Deposit Order — ${name} — Invoice ${invoiceNumber} — Dead Dingo Dongas`,
+        email: fieldValue('email'),
+        message: body,
+      }),
+    })
+      .then(res => { if (!res.ok) throw new Error('send failed'); })
+      .catch(() => {
+        /* Fallback: open the customer's mail client with the same content */
+        const subject = `Deposit Order — ${name} — Invoice ${invoiceNumber} — Dead Dingo Dongas`;
+        window.location.href = `mailto:dddongas@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+      })
+      .finally(() => {
+        setLoading(false);
+        revealPayPal();
+      });
+  }
 
-    const total = Cart.totalPrice(cart);
+  /* ============================================================
+     Phase B: PayPal deposit payment
+     ============================================================ */
+  let buttonsRendered = false;
 
-    const PAYMENT_LABELS = {
-      paypal: 'PayPal',
-    };
+  function revealPayPal() {
+    if (submitBtn) submitBtn.style.display = 'none';
+    if (paypalSection) paypalSection.hidden = false;
 
-    const bodyLines = [
-      'Deposit request from Dead Dingo Dongas website.',
-      '',
-      'CUSTOMER DETAILS:',
-      `  Name:       ${name}`,
-      `  Invoice No: ${invoiceNumber}`,
-      `  Email:      ${email}`,
-      `  Phone:      ${phone}`,
-      `  Address:    ${address}, ${suburb} ${state} ${postcode}`,
-      notes ? `  Notes:      ${notes}` : null,
-      '',
-      'ORDER:',
-      `  ${cart.shedQty}x The Ultimate Aussie Garden Shed @ ${fmtPrice(SHED_CONFIG.basePrice)} each`,
-      ...addonLines,
-      total !== null ? `  Subtotal (excl. freight): ${fmtPrice(total)}` : '',
-      '',
-      `PAYMENT METHOD: ${PAYMENT_LABELS[paymentMethod] || paymentMethod}`,
-      '',
-      'Customer has read and agreed to the Product Specifications & Liability Disclaimer.',
-    ].filter(l => l !== null);
+    /* Lock fields so the paid order matches the emailed details */
+    form.querySelectorAll('.co-input').forEach(el => { el.readOnly = true; el.disabled = el.tagName === 'SELECT'; });
 
-    const subject = `Deposit Request — ${name} — Invoice ${invoiceNumber} — Dead Dingo Dongas`;
-    const mailto  = `mailto:dddongas@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(bodyLines.join('\n'))}`;
+    if (!buttonsRendered) renderPayPalButtons();
+    paypalSection?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
 
-    window.location.href = mailto;
+  function renderPayPalButtons() {
+    buttonsRendered = true;
 
-    /* Show success after a short delay (mailto opens in same tab) */
-    setTimeout(() => showSuccess(paymentMethod), 800);
+    loadPayPalSdk()
+      .then(paypal => {
+        paypal.Buttons({
+          createOrder: (data, actions) => actions.order.create({
+            purchase_units: [{
+              description: `Deposit — ${cart.shedQty}x Ultimate Aussie Garden Shed`,
+              custom_id: fieldValue('invoiceNumber'),
+              amount: { currency_code: 'AUD', value: depositTotal.toFixed(2) },
+            }],
+          }),
+          onApprove: (data, actions) => actions.order.capture().then(details => {
+            const txnId = details?.purchase_units?.[0]?.payments?.captures?.[0]?.id || details?.id || '';
+            sendPaymentConfirmation(txnId);
+            showSuccess(txnId);
+          }),
+          onError: () => {
+            if (paypalNote) paypalNote.textContent =
+              'The payment could not be processed. Please try again, or email us at dddongas@gmail.com and we will send you a PayPal payment request.';
+          },
+        }).render('#paypal-button-container');
+      })
+      .catch(() => {
+        /* SDK unavailable (or client ID not yet configured) — order details
+           were still emailed, so fall back to the manual payment request. */
+        if (paypalNote) paypalNote.textContent =
+          "Your order has been received. Online payment is temporarily unavailable — we'll email you a PayPal payment request for your deposit within 1 business day.";
+        showSuccess('');
+      });
+  }
+
+  function sendPaymentConfirmation(txnId) {
+    /* Fire-and-forget notification to the business inbox */
+    fetch(ORDER_EMAIL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: `DEPOSIT PAID — ${fieldValue('fullName')} — Invoice ${fieldValue('invoiceNumber')} — Dead Dingo Dongas`,
+        email: fieldValue('email'),
+        message: [
+          `Deposit payment received via PayPal.`,
+          '',
+          `  Name:        ${fieldValue('fullName')}`,
+          `  Invoice No:  ${fieldValue('invoiceNumber')}`,
+          `  Amount:      ${fmtPrice(depositTotal)} AUD`,
+          `  PayPal Txn:  ${txnId}`,
+        ].join('\n'),
+      }),
+    }).catch(() => { /* merchant can reconcile from the PayPal dashboard */ });
   }
 
   /* ============================================================
@@ -197,20 +299,27 @@
      ============================================================ */
   function setLoading(on) {
     if (submitBtn) submitBtn.disabled = on;
-    if (submitLbl) submitLbl.textContent = on ? 'Submitting…' : 'Submit Deposit';
+    if (submitLbl) submitLbl.textContent = on ? 'Submitting…' : 'Confirm Details & Pay Deposit';
   }
 
-  function showSuccess(paymentMethod) {
+  function showSuccess(txnId) {
     form.style.display = 'none';
     if (!successEl) return;
     successEl.hidden = false;
 
-    const pmMessages = {
-      paypal: "We'll send a PayPal deposit request ($1,500 per kit) to your email within 1 business day.",
-    };
+    if (!txnId) {
+      const headingEl = successEl.querySelector('.checkout-success__heading');
+      const bodyEl    = successEl.querySelector('.checkout-success__body');
+      if (headingEl) headingEl.textContent = 'Order Received!';
+      if (bodyEl) bodyEl.textContent = 'Your deposit order has been received and your production slot is being confirmed.';
+    }
 
     const pmEl = document.getElementById('checkout-payment-detail');
-    if (pmEl) pmEl.textContent = pmMessages[paymentMethod] || '';
+    if (pmEl) {
+      pmEl.textContent = txnId
+        ? `Deposit of ${fmtPrice(depositTotal)} paid via PayPal. Transaction ID: ${txnId}`
+        : "We'll email you a PayPal payment request for your deposit within 1 business day.";
+    }
 
     Cart.save(Cart.empty());
     Cart.updateBadge(Cart.empty());

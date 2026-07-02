@@ -636,6 +636,11 @@ h1, h2, h3, h4 {
   margin-inline: auto;
 }
 
+.process__step p a {
+  color: var(--amber);
+  text-decoration: underline;
+}
+
 .process__connector {
   display: flex;
   align-items: center;

@@ -132,7 +132,7 @@
 
               <div class="co-payment-paypal">
                 <span class="co-payment-option__badge co-payment-option__badge--paypal">PayPal</span>
-                <p class="co-payment-paypal__desc">We'll send a PayPal payment request for your deposit ($1,500 per kit) to your email address within 1 business day.</p>
+                <p class="co-payment-paypal__desc">Pay your $1,500 per kit deposit securely with PayPal or card. The payment buttons appear after you confirm your details below.</p>
               </div>
 
             </fieldset>
@@ -153,12 +153,17 @@
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;flex-shrink:0">
                 <path d="M5 12h14M12 5l7 7-7 7"/>
               </svg>
-              <span id="submit-label">Submit Deposit</span>
+              <span id="submit-label">Confirm Details &amp; Pay Deposit</span>
             </button>
+
+            <div class="co-paypal-section" id="co-paypal-section" hidden>
+              <p class="co-paypal-note">Details confirmed — complete your deposit payment below.</p>
+              <div id="paypal-button-container"></div>
+            </div>
 
             <p class="co-disclaimer">
               By submitting you agree to our <a href="assets/privacyPolicy.md" target="_blank" rel="noopener">Privacy Policy</a>.
-              We'll send a PayPal deposit request ($1,500 per kit) within 1 business day. Your balance invoice will follow closer to your dispatch date.
+              Your deposit is $1,500 per kit, payable securely by PayPal or card. Your balance invoice will follow closer to your dispatch date.
             </p>
           </form>
 
@@ -170,9 +175,9 @@
                 <path d="M14 26l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
               </svg>
             </div>
-            <h2 class="checkout-success__heading">Deposit Request Submitted!</h2>
+            <h2 class="checkout-success__heading">Deposit Paid — Thank You!</h2>
             <p class="checkout-success__body">
-              Your deposit request has been received. We'll send a PayPal payment request for $1,500 per kit to your email within 1 business day, along with your confirmed production slot details.
+              Your deposit has been received and your production slot is being confirmed. We'll email you a receipt and your slot details within 1 business day.
             </p>
             <p class="checkout-success__payment" id="checkout-payment-detail"></p>
             <div class="checkout-success__actions">

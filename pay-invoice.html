@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en-AU">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pay an Invoice | Dead Dingo Dongas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/styles.css" />
+  <link rel="stylesheet" href="css/checkout.css" />
+</head>
+<body class="checkout-page">
+
+  <!-- Minimal nav -->
+  <header class="checkout-header">
+    <div class="container checkout-header__inner">
+      <a href="index.html" class="checkout-header__logo">
+        <img src="assets/businessLogo/IMG_8025.jpeg" alt="Dead Dingo Dongas" class="checkout-header__logo-img" />
+      </a>
+      <div class="checkout-header__steps">
+        <span class="checkout-step checkout-step--done">Enquiry</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h8M9 5l3 3-3 3"/></svg>
+        <span class="checkout-step checkout-step--done">Deposit</span>
+        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 8h8M9 5l3 3-3 3"/></svg>
+        <span class="checkout-step checkout-step--active">Balance</span>
+      </div>
+      <a href="index.html" class="checkout-header__back">← Back</a>
+    </div>
+  </header>
+
+  <main class="checkout-main">
+    <div class="container">
+      <div class="checkout-form-wrap checkout-form-wrap--narrow">
+
+        <h1 class="pay-invoice__title">Pay an Invoice</h1>
+        <p class="pay-invoice__sub">Pay your deposit or balance invoice securely with PayPal or card. Enter the details exactly as they appear on the invoice we emailed you.</p>
+
+        <form id="invoice-form" novalidate>
+
+          <fieldset class="co-fieldset">
+            <legend class="co-fieldset__legend">Invoice Details</legend>
+
+            <div class="co-field">
+              <label class="co-label" for="fullName">Full Name <span aria-hidden="true">*</span></label>
+              <input class="co-input" type="text" id="fullName" name="fullName"
+                     autocomplete="name" required placeholder="Jane Smith" />
+              <span class="co-field-error" id="err-fullName" aria-live="polite"></span>
+            </div>
+
+            <div class="co-field">
+              <label class="co-label" for="email">Email <span aria-hidden="true">*</span></label>
+              <input class="co-input" type="email" id="email" name="email"
+                     autocomplete="email" required placeholder="jane@example.com" />
+              <span class="co-field-error" id="err-email" aria-live="polite"></span>
+            </div>
+
+            <div class="co-row">
+              <div class="co-field">
+                <label class="co-label" for="invoiceNumber">Invoice Number <span aria-hidden="true">*</span></label>
+                <input class="co-input" type="text" id="invoiceNumber" name="invoiceNumber"
+                       required placeholder="e.g. DDD-2024-001" />
+                <span class="co-field-error" id="err-invoiceNumber" aria-live="polite"></span>
+              </div>
+              <div class="co-field">
+                <label class="co-label" for="amount">Amount (AUD) <span aria-hidden="true">*</span></label>
+                <input class="co-input" type="number" id="amount" name="amount"
+                       required min="1" step="0.01" inputmode="decimal" placeholder="e.g. 3199.00" />
+                <span class="co-field-error" id="err-amount" aria-live="polite"></span>
+              </div>
+            </div>
+            <p class="co-field-hint">The amount to pay is shown on your invoice email.</p>
+          </fieldset>
+
+          <p class="co-form-error" id="form-error" aria-live="assertive"></p>
+
+          <button type="submit" class="btn btn--amber btn--lg btn--block co-submit-btn" id="pi-submit-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="width:18px;height:18px;flex-shrink:0">
+              <path d="M5 12h14M12 5l7 7-7 7"/>
+            </svg>
+            <span id="pi-submit-label">Continue to Payment</span>
+          </button>
+
+          <div class="co-paypal-section" id="pi-paypal-section" hidden>
+            <p class="co-paypal-note" id="pi-paypal-note">Complete your payment below.</p>
+            <div id="paypal-button-container"></div>
+          </div>
+
+          <p class="co-disclaimer">
+            Payments are processed securely by PayPal. You'll receive a PayPal receipt by email.
+            Questions? Email <a href="mailto:dddongas@gmail.com">dddongas@gmail.com</a>.
+          </p>
+        </form>
+
+        <!-- ===== SUCCESS ===== -->
+        <div class="checkout-success" id="invoice-success" hidden>
+          <div class="checkout-success__icon" aria-hidden="true">
+            <svg viewBox="0 0 52 52" fill="none">
+              <circle cx="26" cy="26" r="25" stroke="currentColor" stroke-width="2"/>
+              <path d="M14 26l8 8 16-16" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h2 class="checkout-success__heading">Payment Received — Thank You!</h2>
+          <p class="checkout-success__body">
+            Your invoice payment has been received. We'll email you a receipt and your next steps within 1 business day.
+          </p>
+          <p class="checkout-success__payment" id="invoice-payment-detail"></p>
+          <div class="checkout-success__actions">
+            <a href="index.html" class="btn btn--ghost">← Back to Home</a>
+            <a href="mailto:dddongas@gmail.com" class="btn btn--amber">Email Us</a>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="checkout-footer">
+    <div class="container">
+      <p>Dead Dingo Dongas &middot; <a href="mailto:dddongas@gmail.com">dddongas@gmail.com</a> &middot; ABN: 50 883 188 200 &middot; Railway Avenue, Gravesend NSW 2401</p>
+    </div>
+  </footer>
+
+  <script src="js/shop.js"></script>
+  <script src="js/pay-invoice.js"></script>
+</body>
+</html>

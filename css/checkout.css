@@ -607,4 +607,14 @@
 
 /* ---- Field hint text (e.g. invoice number) ---- */
 .co-field-hint { font-size: 0.8rem; color: var(--text-mid); margin: 0.25rem 0 0; }
+
+/* ---- PayPal payment section ---- */
+.co-paypal-section { margin-top: 1.25rem; padding: 1.25rem; background: var(--cream-dark); border-radius: var(--radius); }
+.co-paypal-note { font-size: 0.875rem; font-weight: 600; color: var(--green-dark); margin: 0 0 1rem; text-align: center; }
+#paypal-button-container { max-width: 480px; margin: 0 auto; }
+
+/* ---- Pay Invoice page ---- */
+.checkout-form-wrap--narrow { max-width: 640px; margin: 0 auto; }
+.pay-invoice__title { font-family: 'Playfair Display', serif; font-size: clamp(1.6rem, 4vw, 2.2rem); font-weight: 800; color: var(--green-dark); margin-bottom: 0.5rem; }
+.pay-invoice__sub { font-size: 0.9375rem; color: var(--text-mid); line-height: 1.65; margin-bottom: 1.75rem; }
 .co-disclaimer-error { font-size: 0.78rem; color: #c0392b; margin-top: 0.35rem; margin-left: 1.875rem; }

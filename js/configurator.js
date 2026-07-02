@@ -298,13 +298,14 @@
     const form     = e.target;
     const name     = form.name.value.trim();
     const email    = form.email.value.trim();
+    const phone    = form.phone.value.trim();
     const address  = form.address.value.trim();
     const suburb   = form.suburb.value.trim();
     const state    = form.state.value.trim();
     const postcode = form.postcode.value.trim();
 
     let valid = true;
-    [form.name, form.email, form.address, form.suburb, form.state, form.postcode].forEach(input => {
+    [form.name, form.email, form.phone, form.address, form.suburb, form.state, form.postcode].forEach(input => {
       const ok = input.checkValidity() && input.value.trim();
       input.classList.toggle('error', !ok);
       if (!ok) valid = false;
@@ -341,16 +342,38 @@
       'MY DETAILS:',
       `Name:     ${name}`,
       `Email:    ${email}`,
+      `Phone:    ${phone}`,
       `Address:  ${address}, ${suburb} ${state} ${postcode}`,
       '',
       'The customer has read and agreed to the Product Specifications & Liability Disclaimer.',
     ].filter(l => l !== undefined).join('\n');
 
-    const mailto = `mailto:dddongas@gmail.com?subject=${encodeURIComponent('Shed Enquiry — Dead Dingo Dongas')}&body=${encodeURIComponent(body)}`;
-    window.location.href = mailto;
+    const submitBtn = form.querySelector('.enquiry-form__submit');
+    if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending…'; }
 
-    document.getElementById('enquiry-form-wrap').style.display = 'none';
-    document.getElementById('enquiry-success').style.display = '';
+    const showEnquirySuccess = () => {
+      document.getElementById('enquiry-form-wrap').style.display = 'none';
+      document.getElementById('enquiry-success').style.display = '';
+    };
+
+    fetch(ORDER_EMAIL_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: 'Shed Enquiry — Dead Dingo Dongas',
+        email,
+        message: body,
+      }),
+    })
+      .then(res => { if (!res.ok) throw new Error('send failed'); showEnquirySuccess(); })
+      .catch(() => {
+        /* Fallback: open the customer's mail client with the same content */
+        window.location.href = `mailto:dddongas@gmail.com?subject=${encodeURIComponent('Shed Enquiry — Dead Dingo Dongas')}&body=${encodeURIComponent(body)}`;
+        showEnquirySuccess();
+      })
+      .finally(() => {
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Send Enquiry'; }
+      });
   });
 
   /* ---- Init ---- */
